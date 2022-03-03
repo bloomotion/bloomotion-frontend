@@ -1,20 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
 
 import { videoSize } from "../../constants/dailyPhoto";
 import { setUserEmotion } from "../../api/emotion";
 import { TYPE } from "../../constants/flower";
-import { useParams } from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 const DailyPhotoWrapper = styled.div`
   position: relative;
 `;
 
+const PhotoBackGround = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 5%);
+  background-color: #000000;
+  width: 1400px;
+  height: 720px;
+`;
+
 const VideoWrapper = styled.div`
   position: absolute;
   left: 50%;
-  top: 50px;
+  top: 36px;
   transform: translateX(-50%);
 `;
 
@@ -22,22 +33,39 @@ const VideoContainer = styled.video`
   transform: rotateY(180deg);
 `;
 
-const VideoButton = styled.button`
-  position: absolute;
-  bottom: 20px;
-  left: 440px;
-  width: 50px;
-  height: 50px;
-  background-color: #ffffff;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
+const VideoButtonWrapper = styled.div`
+  .outButton {
+    position: absolute;
+    bottom: 20px;
+    left: 580px;
+    width: 50px;
+    height: 50px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+  }
+
+  .inButton {
+    position: absolute;
+    bottom: 23.5px;
+    left: 583.5px;
+    width: 43px;
+    height: 43px;
+    background-color: #ffffff;
+    border: 2px solid #1c1c1c;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .inButton:hover {
+    background-color: #1c1c1c;
+  }
 `;
 
 const CanvasWrapper = styled.div`
   position: absolute;
   left: 50%;
-  top: 50px;
+  top: 36px;
   transform: translateX(-50%);
 `;
 
@@ -47,47 +75,59 @@ const CanvasContainer = styled.canvas`
 
 const Notification = styled.p`
   position: absolute;
-  bottom: 10px;
+  bottom: 0px;
   left: 20px;
   color: #ffffff;
 `;
 
 const PhotoButtonWrapper = styled.div`
   position: absolute;
-  bottom: 10px;
+  bottom: 15px;
   right: 20px;
 
   button {
-    margin-right: 10px;
+    width: 90px;
+    height: 30px;
     border: none;
-    background-color: #000000;
+    border-bottom: 1px solid #ffffff;
+    background: none;
     font-size: 20px;
     color: #ffffff;
+    transition: all 0.3s ease;
+    overflow: hidden;
     cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #ffffff;
+    color: #000000;
   }
 `;
 
 function DailyPhoto() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const videoRef = useRef(null);
   const photoRef = useRef(null);
   const [hasPhoto, setHasPhoto] = useState(false);
   const [hasExpression, setHasExpression] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({
+  const getVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: videoSize.width, height: videoSize.height },
-      })
-      .then((stream) => {
-        const video = videoRef.current;
-
-        video.srcObject = stream;
-        video.play();
-      })
-      .catch((err) => {
-        console.error(err);
       });
+
+      setIsLoading(false);
+
+      const video = videoRef.current;
+
+      video.srcObject = stream;
+      video.play();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const takePhoto = () => {
@@ -149,6 +189,8 @@ function DailyPhoto() {
         confidence,
         TYPE[strongestEmotion],
       );
+
+      navigate(`/users/${id}/emotion/${strongestEmotion}`);
     } catch (err) {
       console.error(err);
     }
@@ -168,28 +210,37 @@ function DailyPhoto() {
   }, [videoRef]);
 
   return (
-    <DailyPhotoWrapper>
-      <VideoWrapper>
-        <VideoContainer ref={videoRef}></VideoContainer>
-        <VideoButton onClick={takePhoto} />
-      </VideoWrapper>
-      <CanvasWrapper>
-        <CanvasContainer ref={photoRef} />
-        {hasPhoto && (
-          <>
-            {!hasExpression && (
-              <Notification>
-                얼굴 인식을 할 수 없습니다. 다시 촬영해 주세요.
-              </Notification>
+    <>
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <DailyPhotoWrapper>
+          <PhotoBackGround />
+          <VideoWrapper>
+            <VideoContainer ref={videoRef}></VideoContainer>
+            <VideoButtonWrapper>
+              <button className="outButton" />
+              <button className="inButton" onClick={takePhoto} />
+            </VideoButtonWrapper>
+          </VideoWrapper>
+          <CanvasWrapper>
+            <CanvasContainer ref={photoRef} />
+            {hasPhoto && (
+              <>
+                {!hasExpression && (
+                  <Notification>
+                    얼굴 인식을 할 수 없습니다. 다시 촬영해 주세요.
+                  </Notification>
+                )}
+                <PhotoButtonWrapper>
+                  <button onClick={closePhoto}>retake</button>
+                  <button onClick={submitPhoto}>submit</button>
+                </PhotoButtonWrapper>
+              </>
             )}
-            <PhotoButtonWrapper>
-              <button onClick={closePhoto}>retake</button>
-              <button onClick={submitPhoto}>submit</button>
-            </PhotoButtonWrapper>
-          </>
-        )}
-      </CanvasWrapper>
-    </DailyPhotoWrapper>
+          </CanvasWrapper>
+        </DailyPhotoWrapper>
+      )}
+    </>
   );
 }
 
