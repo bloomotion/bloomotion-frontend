@@ -1,4 +1,4 @@
 export const videoSize = {
-  width: 900,
-  height: 675,
+  width: 1200,
+  height: 720,
 };
