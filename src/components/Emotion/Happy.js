@@ -11,10 +11,10 @@ function Happy() {
       .attr("width", width)
       .attr("height", height)
       .style("background-color", "transparent");
-    const randomCoordinateX = (d) => d3.randomNormal(d, 250)();
-    const randomCoordinateY = d3.randomNormal(height / 2, 200);
+    const randomCoordinateX = (d) => d3.randomNormal(d, 300)();
+    const randomCoordinateY = d3.randomNormal(height / 2, 250);
     const randomX = d3.randomNormal(width / 2, 100);
-    const randomSize = d3.randomUniform(30, 80);
+    const randomSize = d3.randomUniform(30, 100);
     const color = [
       "#FFEF0098",
       "#F4FF0098",
