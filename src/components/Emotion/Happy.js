@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+import { CANVAS, HAPPY_COLOR } from "../../constants/emotion";
 
 function Happy() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const width = CANVAS.width;
+  const height = CANVAS.height;
 
   useEffect(() => {
     const svg = d3
@@ -15,14 +16,6 @@ function Happy() {
     const randomCoordinateY = d3.randomNormal(height / 2, 250);
     const randomX = d3.randomNormal(width / 2, 100);
     const randomSize = d3.randomUniform(30, 100);
-    const color = [
-      "#FFEF0098",
-      "#F4FF0098",
-      "#BF570098",
-      "#FFF30098",
-      "#4E1F0098",
-      "#CCF20098",
-    ];
 
     setInterval(() => {
       animateCircles();
@@ -56,7 +49,7 @@ function Happy() {
         })
         .attr("r", randomSize)
         .attr("opacity", 1)
-        .style("fill", () => color[Math.floor(d3.randomUniform(0, 6)())])
+        .style("fill", () => HAPPY_COLOR[Math.floor(d3.randomUniform(0, 6)())])
         .transition()
         .ease(d3.easeExp)
         .duration(3000)

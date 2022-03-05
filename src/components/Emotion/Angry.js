@@ -2,6 +2,14 @@ import React, { useEffect } from "react";
 import * as d3 from "d3";
 import styled from "styled-components";
 
+import Logout from "../Logout/Logout";
+import {
+  ANGRY_AREACHART_VERTICAL_WIDTH,
+  ANGRY_CIRCLE_COLOR,
+  ANGRY_COLORS,
+  CANVAS,
+} from "../../constants/emotion";
+
 const AreaChartContainer = styled.div`
   position: relative;
 
@@ -11,29 +19,15 @@ const AreaChartContainer = styled.div`
 `;
 
 function Angry() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const width = CANVAS.width;
+  const height = CANVAS.height;
   const svgArray = [];
   const array = Array.from(Array(12).keys());
-  const areaChartVerticalWidthArray = [
-    { to: 900, from: 550 },
-    { to: 550, from: 400 },
-    { to: 400, from: 280 },
-    { to: 280, from: 130 },
-    { to: 100, from: 0 },
-  ];
-  const colorArray = [
-    "#FCFF9570",
-    "#FFF36770",
-    "#FFD50070",
-    "#FF8A0070",
-    "#FF430070",
-  ];
   const chartArea = d3
     .area()
-    .x((value, index) => index * 200)
+    .x((d, i) => i * 200)
     .y0(900)
-    .y1((value) => 700 - value)
+    .y1((d) => 700 - d)
     .curve(d3.curveBasis);
 
   function createSvg(index) {
@@ -70,8 +64,8 @@ function Angry() {
       targetSvg
         .transition()
         .duration(2000)
-        .attr("d", () => chartArea(createPath(to, from)))
-        .attr("fill", colorArray[index])
+        .attr("d", chartArea(createPath(to, from)))
+        .attr("fill", ANGRY_COLORS[index])
         .on("end", repeat);
     }
   }
@@ -95,7 +89,7 @@ function Angry() {
       .attr("cx", (d) => d.x)
       .attr("cy", (d) => d.y)
       .attr("r", (d) => d.r)
-      .style("fill", "#8A270090");
+      .style("fill", ANGRY_CIRCLE_COLOR);
 
     repeat();
 
@@ -142,8 +136,8 @@ function Angry() {
 
     for (let i = 0; i < 5; i++) {
       animateAreaChart(
-        areaChartVerticalWidthArray[i].to,
-        areaChartVerticalWidthArray[i].from,
+        ANGRY_AREACHART_VERTICAL_WIDTH[i].to,
+        ANGRY_AREACHART_VERTICAL_WIDTH[i].from,
         i,
         svgArray[i],
       );
@@ -152,7 +146,12 @@ function Angry() {
     }
   }, []);
 
-  return <AreaChartContainer id="canvas"></AreaChartContainer>;
+  return (
+    <>
+      <Logout />
+      <AreaChartContainer id="canvas"></AreaChartContainer>
+    </>
+  );
 }
 
 export default Angry;

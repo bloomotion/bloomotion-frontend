@@ -3,10 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
 
-import { videoSize } from "../../constants/dailyPhoto";
 import { setUserEmotion } from "../../api/emotion";
-import { TYPE } from "../../constants/flower";
 import Loading from "../Loading/Loading";
+import Logout from "../Logout/Logout";
+import { VIDEO_SIZE } from "../../constants/dailyPhoto";
+import { TYPE } from "../../constants/emotion";
 
 const DailyPhotoWrapper = styled.div`
   position: relative;
@@ -110,13 +111,13 @@ function DailyPhoto() {
   const videoRef = useRef(null);
   const photoRef = useRef(null);
   const [hasPhoto, setHasPhoto] = useState(false);
-  const [hasExpression, setHasExpression] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const getVideo = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: videoSize.width, height: videoSize.height },
+        video: { width: VIDEO_SIZE.width, height: VIDEO_SIZE.height },
       });
 
       setIsLoading(false);
@@ -131,12 +132,12 @@ function DailyPhoto() {
   };
 
   const takePhoto = () => {
-    const width = videoSize.width;
-    const height = videoSize.height;
+    const width = VIDEO_SIZE.width;
+    const height = VIDEO_SIZE.height;
     const video = videoRef.current;
     const photo = photoRef.current;
 
-    setHasExpression(true);
+    setErrorMessage("");
 
     photo.width = width;
     photo.height = height;
@@ -167,7 +168,7 @@ function DailyPhoto() {
         .withFaceExpressions();
 
       if (!detections) {
-        setHasExpression(false);
+        setErrorMessage("얼굴 인식을 할 수 없습니다. 다시 촬영해 주세요.");
 
         return;
       }
@@ -192,17 +193,18 @@ function DailyPhoto() {
 
       navigate(`/users/${id}/emotion/${strongestEmotion}`);
     } catch (err) {
-      console.error(err);
+      setErrorMessage(err.message);
     }
   };
 
   const submitPhoto = async () => {
-    Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-      faceapi.nets.faceExpressionNet.loadFromUri("/models"),
-    ])
-      .then(handleImage)
-      .catch((err) => console.error(err));
+    try {
+      await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
+      await faceapi.nets.faceExpressionNet.loadFromUri("/models");
+      await handleImage();
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
   };
 
   useEffect(() => {
@@ -211,6 +213,7 @@ function DailyPhoto() {
 
   return (
     <>
+      <Logout />
       {isLoading && <Loading />}
       {!isLoading && (
         <DailyPhotoWrapper>
@@ -226,10 +229,8 @@ function DailyPhoto() {
             <CanvasContainer ref={photoRef} />
             {hasPhoto && (
               <>
-                {!hasExpression && (
-                  <Notification>
-                    얼굴 인식을 할 수 없습니다. 다시 촬영해 주세요.
-                  </Notification>
+                {errorMessage.length !== 0 && (
+                  <Notification>{errorMessage}</Notification>
                 )}
                 <PhotoButtonWrapper>
                   <button onClick={closePhoto}>retake</button>
