@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import * as d3 from "d3";
 import styled from "styled-components";
 
-import Logout from "../Logout/Logout";
 import {
   ANGRY_AREACHART_VERTICAL_WIDTH,
   ANGRY_CIRCLE_COLOR,
@@ -146,12 +145,7 @@ function Angry() {
     }
   }, []);
 
-  return (
-    <>
-      <Logout />
-      <AreaChartContainer id="canvas"></AreaChartContainer>
-    </>
-  );
+  return <AreaChartContainer id="canvas"></AreaChartContainer>;
 }
 
 export default Angry;

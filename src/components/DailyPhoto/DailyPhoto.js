@@ -4,10 +4,10 @@ import styled from "styled-components";
 import * as faceapi from "face-api.js";
 
 import { setUserEmotion } from "../../api/emotion";
-import Loading from "../Loading/Loading";
 import Logout from "../Logout/Logout";
 import { VIDEO_SIZE } from "../../constants/dailyPhoto";
 import { TYPE } from "../../constants/emotion";
+import Loading from "../Loading/Loading";
 
 const DailyPhotoWrapper = styled.div`
   position: relative;
