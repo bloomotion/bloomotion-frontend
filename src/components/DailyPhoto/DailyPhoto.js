@@ -5,7 +5,11 @@ import * as faceapi from "face-api.js";
 
 import { setUserEmotion } from "../../api/emotion";
 import Logout from "../Logout/Logout";
-import { VIDEO_SIZE } from "../../constants/dailyPhoto";
+import {
+  EXPRESSION_TYPES,
+  UNRECOGNIZED,
+  VIDEO_SIZE,
+} from "../../constants/dailyPhoto";
 import { TYPE } from "../../constants/emotion";
 import Loading from "../Loading/Loading";
 
@@ -76,8 +80,9 @@ const CanvasContainer = styled.canvas`
 
 const Notification = styled.p`
   position: absolute;
-  bottom: 0px;
+  bottom: 10px;
   left: 20px;
+  font-size: 20px;
   color: #ffffff;
 `;
 
@@ -168,16 +173,15 @@ function DailyPhoto() {
         .withFaceExpressions();
 
       if (!detections) {
-        setErrorMessage("얼굴 인식을 할 수 없습니다. 다시 촬영해 주세요.");
+        setErrorMessage(UNRECOGNIZED);
 
         return;
       }
 
-      const expressionTypes = Object.keys(detections.expressions);
       let confidence = 0.000001;
       let strongestEmotion;
 
-      expressionTypes.forEach((type) => {
+      EXPRESSION_TYPES.forEach((type) => {
         if (confidence < detections.expressions[type]) {
           confidence = detections.expressions[type];
           strongestEmotion = type;

@@ -1,3 +1,5 @@
+export const UNREGISTERED_USER = "Unregistered user. Please login in again.";
+
 export const TYPE = {
   happy: "sunFlower",
   sad: "anemone",

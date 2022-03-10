@@ -64,9 +64,14 @@ function Sad() {
 
     drawCircles();
 
-    setInterval(() => {
+    const repeat = setInterval(() => {
       drawCircles();
     }, 5000);
+
+    return () => {
+      clearInterval(repeat);
+      d3.select("#canvas").remove();
+    };
   }, []);
 
   return <div id="canvas"></div>;

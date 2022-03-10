@@ -143,6 +143,10 @@ function Angry() {
 
       animateCircle(svgArray[i]);
     }
+
+    return () => {
+      d3.select("#canvas").remove();
+    };
   }, []);
 
   return <AreaChartContainer id="canvas"></AreaChartContainer>;

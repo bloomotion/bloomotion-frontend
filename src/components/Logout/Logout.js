@@ -7,12 +7,19 @@ import { authentication } from "../../api/firebase-config";
 import { ACCESS_TOKEN } from "../../constants/auth";
 
 const LogoutButton = styled.div`
+  display: flex;
   position: absolute;
   top: 10px;
   right: 15px;
-  font-size: 25px;
+  font-size: 18px;
   z-index: 1;
   cursor: pointer;
+
+  .logout {
+    margin-top: 3px;
+    margin-right: 5px;
+    font-size: 16px;
+  }
 `;
 
 function Logout() {
@@ -31,8 +38,8 @@ function Logout() {
 
   return (
     <LogoutButton onClick={handleLogout}>
-      logout
-      <i className="fa-solid fa-right-from-bracket"></i>
+      <p className="logout">Logout</p>
+      <i className="fa-solid fa-right-from-bracket logoutIcon"></i>
     </LogoutButton>
   );
 }

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { CANVAS, HAPPY_COLOR } from "../../constants/emotion";
 
 const AreaChartContainer = styled.div`
-  position: relative;
+  position: absolute;
 
   .positionAbsolute {
     position: absolute;
@@ -93,15 +93,21 @@ function Happy() {
       animateCircles(svgArray[1]);
     }, 3500);
 
-    setInterval(() => {
+    const repeatAnimateCircles1 = setInterval(() => {
       animateCircles(svgArray[0]);
     }, 7000);
 
-    setTimeout(() => {
+    const repeatAnimateCircles2 = setTimeout(() => {
       setInterval(() => {
         animateCircles(svgArray[1]);
       }, 7000);
     }, 3500);
+
+    return () => {
+      clearInterval(repeatAnimateCircles1);
+      clearInterval(repeatAnimateCircles2);
+      d3.select("#canvas").remove();
+    };
   }, []);
 
   return <AreaChartContainer id="canvas"></AreaChartContainer>;

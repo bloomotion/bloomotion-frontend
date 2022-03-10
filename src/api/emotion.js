@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { ACCESS_TOKEN } from "../constants/auth";
+import { UNREGISTERED_USER } from "../constants/emotion";
 
 export async function setUserEmotion(userId, emotion, confidence, flower) {
   try {
@@ -18,25 +19,6 @@ export async function setUserEmotion(userId, emotion, confidence, flower) {
 
     return res.data;
   } catch (err) {
-    throw new Error("등록되지 않은 사용자 입니다. 다시 로그인 해주세요.");
-  }
-}
-
-export async function getUserEmotion(userId) {
-  try {
-    axios.defaults.headers.common[ACCESS_TOKEN] =
-      localStorage.getItem(ACCESS_TOKEN);
-
-    const res = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/emotion`,
-      {
-        headers: { "content-type": "application/json" },
-        withCredentials: true,
-      },
-    );
-
-    return res.data;
-  } catch (err) {
-    console.error(err);
+    throw new Error(UNREGISTERED_USER);
   }
 }
