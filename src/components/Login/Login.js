@@ -14,7 +14,7 @@ const LoginButton = styled.button`
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 22px;
+  font-size: 25px;
   cursor: pointer;
 `;
 
@@ -24,6 +24,22 @@ const Notification = styled.p`
   top: 55%;
   transform: translate(-50%, -50%);
   color: red;
+`;
+
+const LogoContainer = styled.div`
+  position: absolute;
+  left: 20px;
+  bottom: 10px;
+  width: 75px;
+  height: 75px;
+  border: 1px solid #ffffff;
+
+  .logoText {
+    margin-top: 40px;
+    margin-left: 5px;
+    color: #ffffff;
+    font-size: 18px;
+  }
 `;
 
 function Login() {
@@ -84,8 +100,15 @@ function Login() {
   return (
     <>
       <div id="container"></div>
-      <LoginButton onClick={handleLogin}>login</LoginButton>
+      <LoginButton onClick={handleLogin}>Login</LoginButton>
       <Notification>{errorMessage}</Notification>
+      <LogoContainer>
+        <p className="logoText">
+          bloo
+          <br />
+          motion
+        </p>
+      </LogoContainer>
     </>
   );
 }

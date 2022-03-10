@@ -2,17 +2,17 @@ import axios from "axios";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 import { authentication } from "./firebase-config";
-import { ACCESS_TOKEN } from "../constants/auth";
+import { ACCESS_TOKEN, SERVER_ERROR } from "../constants/auth";
 
 export async function signInWithGoogle() {
   const provider = new GoogleAuthProvider();
 
   try {
     const userCredential = await signInWithPopup(authentication, provider);
-    const { displayName, email } = userCredential.user;
+    const { email } = userCredential.user;
     const res = await axios.post(
       `${process.env.REACT_APP_SERVER_URL}/login`,
-      { displayName, email },
+      { email },
       {
         headers: { "content-type": "application/json" },
         withCredentials: true,
@@ -50,6 +50,6 @@ export async function getLoggedInUser() {
 
     return res.data.result.id;
   } catch (err) {
-    throw new Error("서버에서 정보를 가져오지 못했습니다.");
+    throw new Error(SERVER_ERROR);
   }
 }

@@ -93,9 +93,10 @@ const LoadingGrid = styled.div`
 
 const LoadingText = styled.p`
   position: absolute;
-  top: 45%;
+  top: 47%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-size: 20px;
 `;
 
 function Loading() {
@@ -112,7 +113,7 @@ function Loading() {
         <div></div>
         <div></div>
       </LoadingGrid>
-      <LoadingText>잠시만 기다려 주세요</LoadingText>
+      <LoadingText>wait a second..</LoadingText>
     </>
   );
 }
