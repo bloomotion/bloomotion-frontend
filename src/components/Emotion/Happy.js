@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
-import { CANVAS, HAPPY_COLOR } from "../../constants/emotion";
+import { CANVAS, HAPPY_COLOR_CODE } from "../../constants/emotion";
+import { calculateEmotionDegree } from "../../utils/emotion";
 
 const AreaChartContainer = styled.div`
   position: absolute;
@@ -12,14 +14,15 @@ const AreaChartContainer = styled.div`
   }
 `;
 
-function Happy() {
+function Happy({ emotionDegree }) {
   const width = CANVAS.width;
   const height = CANVAS.height;
   const svgArray = [];
-  const randomCoordinateX = (d) => d3.randomNormal(d, 300)();
+  const randomCoordinateX = (d) => d3.randomNormal(d, 350)();
   const randomCoordinateY = d3.randomNormal(height / 2, 250);
   const randomX = d3.randomNormal(width / 2, 100);
-  const randomSize = d3.randomUniform(30, 100);
+  const randomSize = d3.randomUniform(30, 130);
+  const colors = calculateEmotionDegree(HAPPY_COLOR_CODE, emotionDegree);
 
   function createSvg(index) {
     const newSvg = d3
@@ -60,7 +63,7 @@ function Happy() {
       })
       .attr("r", randomSize)
       .attr("opacity", 1)
-      .style("fill", () => HAPPY_COLOR[Math.floor(d3.randomUniform(0, 6)())])
+      .style("fill", () => colors[Math.floor(d3.randomUniform(0, 6)())])
       .transition()
       .ease(d3.easeExp)
       .duration(4000)
@@ -114,3 +117,7 @@ function Happy() {
 }
 
 export default Happy;
+
+Happy.propTypes = {
+  emotionDegree: PropTypes.string,
+};

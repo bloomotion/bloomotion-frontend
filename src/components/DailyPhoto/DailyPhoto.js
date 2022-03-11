@@ -6,8 +6,9 @@ import * as faceapi from "face-api.js";
 import { setUserEmotion } from "../../api/emotion";
 import Logout from "../Logout/Logout";
 import {
-  EXPRESSION_TYPES,
+  MAIN_EMOTION,
   UNRECOGNIZED,
+  UNREGISTERED_EMOTION,
   VIDEO_SIZE,
 } from "../../constants/dailyPhoto";
 import { TYPE } from "../../constants/emotion";
@@ -181,12 +182,36 @@ function DailyPhoto() {
       let confidence = 0.000001;
       let strongestEmotion;
 
-      EXPRESSION_TYPES.forEach((type) => {
+      Object.keys(detections.expressions).forEach((type) => {
         if (confidence < detections.expressions[type]) {
           confidence = detections.expressions[type];
           strongestEmotion = type;
         }
       });
+
+      if (
+        strongestEmotion === "fearful" ||
+        strongestEmotion === "disgusted" ||
+        strongestEmotion === "surprised"
+      ) {
+        setErrorMessage(UNREGISTERED_EMOTION);
+
+        return;
+      }
+
+      if (strongestEmotion === "neutral") {
+        const secondEmotion = MAIN_EMOTION.reduce((prev, cur) => {
+          return detections.expressions[prev] > detections.expressions[cur]
+            ? prev
+            : cur;
+        });
+
+        navigate(
+          `/users/${id}/emotion/${secondEmotion}/${detections.expressions[secondEmotion]}`,
+        );
+
+        return;
+      }
 
       await setUserEmotion(
         id,
@@ -195,7 +220,7 @@ function DailyPhoto() {
         TYPE[strongestEmotion],
       );
 
-      navigate(`/users/${id}/emotion/${strongestEmotion}`);
+      navigate(`/users/${id}/emotion/${strongestEmotion}/${confidence}`);
     } catch (err) {
       setErrorMessage(err.message);
     }

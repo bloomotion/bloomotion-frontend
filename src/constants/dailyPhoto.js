@@ -5,4 +5,7 @@ export const VIDEO_SIZE = {
   height: 720,
 };
 
-export const EXPRESSION_TYPES = ["happy", "sad", "angry"];
+export const MAIN_EMOTION = ["happy", "sad", "angry"];
+
+export const UNREGISTERED_EMOTION =
+  "Unable to analyze emotions. Please take it again.";
