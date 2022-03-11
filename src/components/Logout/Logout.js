@@ -6,19 +6,25 @@ import { useNavigate } from "react-router-dom";
 import { authentication } from "../../api/firebase-config";
 import { ACCESS_TOKEN } from "../../constants/auth";
 
-const LogoutButton = styled.div`
+const LogoutButton = styled.button`
   display: flex;
   position: absolute;
   top: 10px;
-  right: 15px;
+  right: 20px;
+  width: 60px;
+  height: 30px;
+  border: 1.5px solid #000000;
+  background: none;
+  color: #000000;
   font-size: 18px;
+  line-height: 1.5;
   z-index: 1;
   cursor: pointer;
 
-  .logout {
-    margin-top: 3px;
-    margin-right: 5px;
-    font-size: 16px;
+  &:hover {
+    background-color: #000000;
+    color: #ffffff;
+    transition: 0.3s ease;
   }
 `;
 
@@ -36,12 +42,7 @@ function Logout() {
     }
   }
 
-  return (
-    <LogoutButton onClick={handleLogout}>
-      <p className="logout">Logout</p>
-      <i className="fa-solid fa-right-from-bracket logoutIcon"></i>
-    </LogoutButton>
-  );
+  return <LogoutButton onClick={handleLogout}>logout</LogoutButton>;
 }
 
 export default Logout;

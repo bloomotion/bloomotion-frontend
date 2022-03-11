@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import {
   ANGRY_AREACHART_VERTICAL_WIDTH,
-  ANGRY_CIRCLE_COLOR,
-  ANGRY_COLORS,
+  ANGRY_CIRCLE_COLOR_CODE,
+  ANGRY_COLORS_CODE,
   CANVAS,
 } from "../../constants/emotion";
+import { calculateEmotionDegree } from "../../utils/emotion";
 
 const AreaChartContainer = styled.div`
   position: relative;
@@ -17,11 +19,16 @@ const AreaChartContainer = styled.div`
   }
 `;
 
-function Angry() {
+function Angry({ emotionDegree }) {
   const width = CANVAS.width;
   const height = CANVAS.height;
   const svgArray = [];
   const array = Array.from(Array(12).keys());
+  const colors = calculateEmotionDegree(ANGRY_COLORS_CODE, emotionDegree);
+  const circleColor = calculateEmotionDegree(
+    ANGRY_CIRCLE_COLOR_CODE,
+    emotionDegree,
+  )[0];
   const chartArea = d3
     .area()
     .x((d, i) => i * 200)
@@ -64,7 +71,7 @@ function Angry() {
         .transition()
         .duration(2000)
         .attr("d", chartArea(createPath(to, from)))
-        .attr("fill", ANGRY_COLORS[index])
+        .attr("fill", colors[index])
         .on("end", repeat);
     }
   }
@@ -88,7 +95,7 @@ function Angry() {
       .attr("cx", (d) => d.x)
       .attr("cy", (d) => d.y)
       .attr("r", (d) => d.r)
-      .style("fill", ANGRY_CIRCLE_COLOR);
+      .style("fill", circleColor);
 
     repeat();
 
@@ -153,3 +160,7 @@ function Angry() {
 }
 
 export default Angry;
+
+Angry.propTypes = {
+  emotionDegree: PropTypes.string,
+};

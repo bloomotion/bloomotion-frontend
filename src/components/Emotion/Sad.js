@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+import PropTypes from "prop-types";
 
-import { CANVAS, SAD_COLOR, SAD_RADIUS } from "../../constants/emotion";
+import { CANVAS, SAD_COLORS_CODE } from "../../constants/emotion";
+import { calculateEmotionDegree } from "../../utils/emotion";
 
-function Sad() {
+function Sad({ emotionDegree }) {
   const width = CANVAS.width;
   const height = CANVAS.height;
   const randomDuration = d3.randomUniform(2000, 9000);
   const moveDistance = d3.randomUniform(50, -50);
+  const colors = calculateEmotionDegree(SAD_COLORS_CODE, emotionDegree);
 
   function createSvg() {
     const svg = d3
@@ -41,12 +44,12 @@ function Sad() {
       .append("circle")
       .attr("cx", d3.randomUniform(0, width)())
       .attr("cy", d3.randomUniform(0, height)())
-      .attr("r", SAD_RADIUS[Math.floor(d3.randomUniform(0, 7)())])
+      .attr("r", d3.randomUniform(30, 100)())
       .style("fill", "transparent")
       .style("opacity", 0)
       .transition()
       .duration(randomDuration())
-      .style("fill", SAD_COLOR[Math.floor(d3.randomUniform(0, 4)())])
+      .style("fill", colors[Math.floor(d3.randomUniform(0, 5)())])
       .style("opacity", 1)
       .transition()
       .duration(4000)
@@ -57,7 +60,7 @@ function Sad() {
     const svg = createSvg();
 
     function drawCircles() {
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 110; i++) {
         animateCircle(svg);
       }
     }
@@ -78,3 +81,7 @@ function Sad() {
 }
 
 export default Sad;
+
+Sad.propTypes = {
+  emotionDegree: PropTypes.string,
+};

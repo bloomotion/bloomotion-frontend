@@ -5,7 +5,7 @@ import GlobalStyle from "./components/GlobalStyles/GlobalStyles";
 import Login from "./components/Login/Login";
 import DailyPhoto from "./components/DailyPhoto/DailyPhoto";
 import Emotion from "./components/Emotion/Emotion";
-import Loading from "./components/Loading/Loading";
+import Error from "./components/Error/Error";
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/users/:id/photo" element={<DailyPhoto />} />
-        <Route path="/users/:id/emotion/:state" element={<Emotion />} />
-        <Route path="*" element={<Loading />} />
+        <Route path="/users/:id/emotion/:type/:degree" element={<Emotion />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </>
   );
