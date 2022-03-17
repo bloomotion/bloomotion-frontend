@@ -11,11 +11,20 @@ import {
   UNREGISTERED_EMOTION,
   VIDEO_SIZE,
 } from "../../constants/dailyPhoto";
-import { TYPE } from "../../constants/emotion";
+import { FLOWER_TYPE } from "../../constants/emotion";
 import Loading from "../Loading/Loading";
 
 const DailyPhotoWrapper = styled.div`
   position: relative;
+`;
+
+const VideoStreamError = styled.p`
+  position: absolute;
+  top: 400px;
+  left: 700px;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: #ff0000;
 `;
 
 const PhotoBackGround = styled.div`
@@ -119,6 +128,7 @@ function DailyPhoto() {
   const [hasPhoto, setHasPhoto] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [videoError, setVideoError] = useState(false);
 
   const getVideo = async () => {
     try {
@@ -133,7 +143,7 @@ function DailyPhoto() {
       video.srcObject = stream;
       video.play();
     } catch (err) {
-      console.error(err);
+      setVideoError(true);
     }
   };
 
@@ -217,7 +227,7 @@ function DailyPhoto() {
         id,
         strongestEmotion,
         confidence,
-        TYPE[strongestEmotion],
+        FLOWER_TYPE[strongestEmotion],
       );
 
       navigate(`/users/${id}/emotion/${strongestEmotion}/${confidence}`);
@@ -247,8 +257,11 @@ function DailyPhoto() {
       {!isLoading && (
         <DailyPhotoWrapper>
           <PhotoBackGround />
+          {videoError && (
+            <VideoStreamError>Can not load camera</VideoStreamError>
+          )}
           <VideoWrapper>
-            <VideoContainer ref={videoRef}></VideoContainer>
+            <VideoContainer ref={videoRef} />
             <VideoButtonWrapper>
               <button className="outButton" />
               <button className="inButton" onClick={takePhoto} />
