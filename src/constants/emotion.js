@@ -5,13 +5,19 @@ export const CANVAS = {
 
 export const UNREGISTERED_USER = "Unregistered user. Please login in again.";
 
-export const TYPE = {
+export const FLOWER_TYPE = {
   happy: "sunFlower",
   sad: "anemone",
   angry: "orangeLily",
 };
 
-export const UPPERCASE_TYPE = {
+export const UPPERCASE_EMOTION_TYPE = {
+  happy: "Happy",
+  sad: "Sad",
+  angry: "Angry",
+};
+
+export const UPPERCASE_FLOWER_TYPE = {
   happy: "Sunflower",
   sad: "Anemone",
   angry: "Orange Lily",
