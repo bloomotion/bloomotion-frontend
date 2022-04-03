@@ -93,7 +93,7 @@ const Notification = styled.p`
   bottom: 10px;
   left: 20px;
   font-size: 20px;
-  color: #ffffff;
+  color: #ff0000;
 `;
 
 const PhotoButtonWrapper = styled.div`
@@ -210,17 +210,11 @@ function DailyPhoto() {
       }
 
       if (strongestEmotion === "neutral") {
-        const secondEmotion = MAIN_EMOTION.reduce((prev, cur) => {
+        strongestEmotion = MAIN_EMOTION.reduce((prev, cur) => {
           return detections.expressions[prev] > detections.expressions[cur]
             ? prev
             : cur;
         });
-
-        navigate(
-          `/users/${id}/emotion/${secondEmotion}/${detections.expressions[secondEmotion]}`,
-        );
-
-        return;
       }
 
       await setUserEmotion(

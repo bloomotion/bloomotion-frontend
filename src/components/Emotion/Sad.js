@@ -53,7 +53,8 @@ function Sad({ emotionDegree }) {
       .style("opacity", 1)
       .transition()
       .duration(4000)
-      .style("opacity", 0);
+      .style("opacity", 0)
+      .remove();
   }
 
   useEffect(() => {
